@@ -1,41 +1,51 @@
 ---
 # yaml-language-server: $schema=https://schema.blue-build.org/recipe-v1.json
+# image will be published to ghcr.io/<user>/<name>
 name: blade14-niri-os
 description: "My custom immutable Niri & RTX 3070 workstation for AI Platform Engineering"
+
+# The recommended base image with NVIDIA RTX 3070 drivers pre-built
 base-image: ghcr.io/ublue-os/bazzite-nvidia-open
 image-version: stable
 
 modules:
   - type: files
     files:
-      - source: files
-        dest: /
+      - source: system
+        destination: / # Copies everything inside your repo's system/ folder into the root / of the image
 
-  - type: rpm-ostree
+  - type: dnf
     repos:
-      - https://copr.fedorainfracloud.org/coprs/yalter/niri/repo/fedora-44/yalter-niri-fedora-44.repo
-      - https://copr.fedorainfracloud.org/coprs/victorvintorez/packages/repo/fedora-44/victorvintorez-packages-fedora-44.repo
-    remove:
-      - firefox
+      copr:
+        - yalter/niri
+        - victorvintorez/packages
+        - wezfurlong/wezterm-nightly
     install:
-      - niri
-      - ironbar
-      - xwayland-satellite
-      - swaylock
-      - swayidle
-      - swaybg
-      - fuzzel
-      - mako
-      - wezterm
-      - brightnessctl
-      - playerctl
-      - pavucontrol
-      - blueman
-      - NetworkManager-wifi
-      - network-manager-applet
-      - sddm
+      packages:
+        - niri
+        - ironbar
+        - xwayland-satellite
+        - swaylock
+        - swayidle
+        - swaybg
+        - fuzzel
+        - mako
+        - wezterm
+        - brightnessctl
+        - playerctl
+        - pavucontrol
+        - blueman
+        - NetworkManager-wifi
+        - network-manager-applet
+        - sddm
+    remove:
+      packages:
+        - firefox
+        - firefox-langpacks
 
   - type: systemd
     system:
       enabled:
         - sddm.service
+
+  - type: signing # Sets up proper policy & signing files for signed OCI images
