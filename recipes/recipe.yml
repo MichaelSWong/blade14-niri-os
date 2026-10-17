@@ -8,7 +8,7 @@ image-version: stable
 modules:
   - type: files
     files:
-      - source: system_files
+      - source: files
         dest: /
 
   - type: rpm-ostree
