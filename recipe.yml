@@ -1,0 +1,41 @@
+---
+# yaml-language-server: $schema=https://schema.blue-build.org/recipe-v1.json
+name: blade14-niri-os
+description: "My custom immutable Niri & RTX 3070 workstation for AI Platform Engineering"
+base-image: ghcr.io/ublue-os/bazzite-nvidia-open
+image-version: stable
+
+modules:
+  - type: files
+    files:
+      - source: system_files
+        dest: /
+
+  - type: rpm-ostree
+    repos:
+      - https://copr.fedorainfracloud.org/coprs/yalter/niri/repo/fedora-44/yalter-niri-fedora-44.repo
+      - https://copr.fedorainfracloud.org/coprs/victorvintorez/packages/repo/fedora-44/victorvintorez-packages-fedora-44.repo
+    remove:
+      - firefox
+    install:
+      - niri
+      - ironbar
+      - xwayland-satellite
+      - swaylock
+      - swayidle
+      - swaybg
+      - fuzzel
+      - mako
+      - wezterm
+      - brightnessctl
+      - playerctl
+      - pavucontrol
+      - blueman
+      - NetworkManager-wifi
+      - network-manager-applet
+      - sddm
+
+  - type: systemd
+    system:
+      enabled:
+        - sddm.service
